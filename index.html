@@ -49,8 +49,9 @@
       const res = await fetch('https://singup-iljq.onrender.com/api/signup', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ uid, username, accessToken })
+        body: JSON.stringify({ accessToken })
       });
+
   
       if (res.ok) {
         console.log("Signup successful!"); // ✅ Add this
