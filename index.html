@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Pi Signup</title>
+  <link rel="stylesheet" href="style.css">
+  <script src="https://sdk.minepi.com/pi-sdk.js"></script>
+</head>
+<body>
+  <div class="container">
+    <h1>🚀 Pi Signup Page</h1>
+    <button id="signupBtn">Sign up with Pi</button>
+    <div id="welcomeMessage" class="hidden"></div>
+  </div>
+
+  <script>
+    window.onload = function () {
+      // Wait for Pi SDK to be available
+      if (!window.Pi) {
+        console.error("Pi SDK not available.");
+        return;
+      }
+  
+      // Initialize SDK
+      window.Pi.init({ version: "2.0", sandbox: true });
+  
+      const Pi = window.Pi;
+      const signupBtn = document.getElementById("signupBtn");
+      const welcomeMessage = document.getElementById("welcomeMessage");
+  
+      signupBtn.onclick = async function () {
+        const scopes = ['username'];
+  
+        function onIncompletePaymentFound(payment) {
+          console.log("Incomplete payment:", payment);
+        }
+  
+        try {
+          const auth = await Pi.authenticate(scopes, onIncompletePaymentFound);
+          const { uid, username } = auth.user;
+          const accessToken = auth.accessToken;
+  
+          const res = await fetch('https://singup-iljq.onrender.com/api/signup', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ uid, username, accessToken })
+          });
+  
+          if (res.ok) {
+            signupBtn.classList.add("hidden");
+            welcomeMessage.classList.remove("hidden");
+            welcomeMessage.innerText = `🎉 Welcome, ${username}!`;
+          } else {
+            alert("Signup failed.");
+          }
+        } catch (err) {
+          console.error("Auth error:", err);
+        }
+      };
+    };
+  </script>
+</body>
+</html>
