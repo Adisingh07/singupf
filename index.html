@@ -55,14 +55,16 @@
             body: JSON.stringify({ uid, username, accessToken })
           });
 
-          if (res.ok) {
-            showStatus("🎉 Signup successful!");
-            signupBtn.classList.add("hidden");
-            welcomeMessage.classList.remove("hidden");
-            welcomeMessage.innerText = `🎉 Welcome, ${username}!`;
-          } else {
-            showStatus("❌ Signup failed (backend).", true);
-          }
+           if (res.ok) {
+  const data = await res.json(); // ✅ Get the username
+  signupBtn.classList.add("hidden");
+  welcomeMessage.classList.remove("hidden");
+  welcomeMessage.innerText = `🎉 Welcome, ${data.username}!`; // ✅ Use backend response
+} else {
+  console.error("Backend signup failed");
+  alert("Signup failed.");
+}
+
         } catch (err) {
           console.error("Auth error:", err);
           showStatus("❌ Auth error. Check logs or try again.", true);
