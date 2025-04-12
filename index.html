@@ -29,34 +29,44 @@
       const welcomeMessage = document.getElementById("welcomeMessage");
   
       signupBtn.onclick = async function () {
-        const scopes = ['username'];
+    console.log("Signup button clicked"); // ✅ Add this
   
-        function onIncompletePaymentFound(payment) {
-          console.log("Incomplete payment:", payment);
-        }
+    const scopes = ['username'];
   
-        try {
-          const auth = await Pi.authenticate(scopes, onIncompletePaymentFound);
-          const { uid, username } = auth.user;
-          const accessToken = auth.accessToken;
+    function onIncompletePaymentFound(payment) {
+      console.log("Incomplete payment:", payment);
+    }
   
-          const res = await fetch('https://singup-iljq.onrender.com/api/signup', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ uid, username, accessToken })
-          });
+    try {
+      console.log("Calling Pi.authenticate..."); // ✅ Add this
+      const auth = await Pi.authenticate(scopes, onIncompletePaymentFound);
+      console.log("Auth result:", auth); // ✅ Add this
   
-          if (res.ok) {
-            signupBtn.classList.add("hidden");
-            welcomeMessage.classList.remove("hidden");
-            welcomeMessage.innerText = `🎉 Welcome, ${username}!`;
-          } else {
-            alert("Signup failed.");
-          }
-        } catch (err) {
-          console.error("Auth error:", err);
-        }
-      };
+      const { uid, username } = auth.user;
+      const accessToken = auth.accessToken;
+  
+      console.log("Sending to backend..."); // ✅ Add this
+      const res = await fetch('https://singup-iljq.onrender.com/api/signup', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ uid, username, accessToken })
+      });
+  
+      if (res.ok) {
+        console.log("Signup successful!"); // ✅ Add this
+        signupBtn.classList.add("hidden");
+        welcomeMessage.classList.remove("hidden");
+        welcomeMessage.innerText = `🎉 Welcome, ${username}!`;
+      } else {
+        console.error("Backend signup failed");
+        alert("Signup failed.");
+      }
+    } catch (err) {
+      console.error("Auth error:", err);
+    }
+   };
+
+        
     };
   </script>
 </body>
